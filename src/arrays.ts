@@ -1,3 +1,5 @@
+import { convertCompilerOptionsFromJson } from "typescript";
+
 /**
  * Consume an array of numbers, and return a new array containing
  * JUST the first and last number. If there are no elements, return
@@ -5,7 +7,11 @@
  * the number twice.
  */
 export function bookEndList(numbers: number[]): number[] {
-    return numbers;
+    if (numbers.length !== 0) {
+        return [numbers[0], numbers[numbers.length - 1]];
+    } else {
+        return [];
+    }
 }
 
 /**
@@ -13,7 +19,8 @@ export function bookEndList(numbers: number[]): number[] {
  * number has been tripled (multiplied by 3).
  */
 export function tripleNumbers(numbers: number[]): number[] {
-    return numbers;
+    const tripled = numbers.map((number: number): number => number * 3);
+    return tripled;
 }
 
 /**
@@ -21,7 +28,10 @@ export function tripleNumbers(numbers: number[]): number[] {
  * the number cannot be parsed as an integer, convert it to 0 instead.
  */
 export function stringsToIntegers(numbers: string[]): number[] {
-    return [];
+    const inted = numbers.map((number: string): number =>
+        isNaN(parseInt(number)) ? 0 : parseInt(number),
+    );
+    return inted;
 }
 
 /**
@@ -32,7 +42,13 @@ export function stringsToIntegers(numbers: string[]): number[] {
  */
 // Remember, you can write functions as lambdas too! They work exactly the same.
 export const removeDollars = (amounts: string[]): number[] => {
-    return [];
+    const no$ = amounts.map((amount: string): string =>
+        amount.startsWith("$") ? amount.slice(1) : amount,
+    );
+    const inted = no$.map((number: string): number =>
+        isNaN(parseInt(number)) ? 0 : parseInt(number),
+    );
+    return inted;
 };
 
 /**
@@ -41,7 +57,13 @@ export const removeDollars = (amounts: string[]): number[] => {
  * in question marks ("?").
  */
 export const shoutIfExclaiming = (messages: string[]): string[] => {
-    return [];
+    const noQuestions = messages.filter(
+        (message: string): boolean => !message.endsWith("?"),
+    );
+    const shouted = noQuestions.map((message: string): string =>
+        message.endsWith("!") ? message.toUpperCase() : message,
+    );
+    return shouted;
 };
 
 /**
@@ -49,7 +71,8 @@ export const shoutIfExclaiming = (messages: string[]): string[] => {
  * 4 letters long.
  */
 export function countShortWords(words: string[]): number {
-    return 0;
+    const shorts = words.filter((word: string): boolean => word.length < 4);
+    return shorts.length;
 }
 
 /**
@@ -58,7 +81,13 @@ export function countShortWords(words: string[]): number {
  * then return true.
  */
 export function allRGB(colors: string[]): boolean {
-    return false;
+    if (colors.length === 0) {
+        return true;
+    }
+    return colors.every(
+        (color: string): boolean =>
+            color === "red" || color === "blue" || color === "green",
+    );
 }
 
 /**
@@ -69,7 +98,14 @@ export function allRGB(colors: string[]): boolean {
  * And the array [] would become "0=0".
  */
 export function makeMath(addends: number[]): string {
-    return "";
+    if (addends.length === 0) {
+        return "0=0";
+    }
+    const summed = addends.reduce(
+        (total: number, addend: number) => total + addend,
+        0,
+    );
+    return summed.toString() + "=" + addends.join("+");
 }
 
 /**
@@ -82,5 +118,22 @@ export function makeMath(addends: number[]): string {
  * And the array [1, 9, 7] would become [1, 9, 7, 17]
  */
 export function injectPositive(values: number[]): number[] {
-    return [];
+    const firstNegative = values.findIndex(
+        (value: number): boolean => value < 0,
+    );
+    if (firstNegative === -1) {
+        const sum = values.reduce(
+            (total: number, value: number) => total + value,
+            0,
+        );
+        const newValues = [...values, sum];
+        return newValues;
+    } else {
+        const sum = values
+            .slice(0, firstNegative)
+            .reduce((total: number, value: number) => total + value, 0);
+        const newValues = [...values];
+        newValues.splice(firstNegative + 1, 0, sum);
+        return newValues;
+    }
 }
